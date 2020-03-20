@@ -8,8 +8,18 @@
     tools:context=".HomeActivity">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="hey"
         android:textSize="30sp"
-        android:layout_height="match_parent"/>
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="188dp" />
+
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="69dp"
+        android:layout_height="68dp"
+        android:background="@android:drawable/ic_menu_preferences"
+        tools:layout_editor_absoluteX="317dp"
+        tools:layout_editor_absoluteY="59dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
