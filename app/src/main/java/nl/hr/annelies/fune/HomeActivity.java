@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -13,7 +14,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
     }
 
-    public void settings() {
+    public void settings(View view) {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
 
