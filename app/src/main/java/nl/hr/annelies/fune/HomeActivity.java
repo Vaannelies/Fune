@@ -13,6 +13,13 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
+    // API STUFF
+
+    String API_url;
+    String API_key;
+
+    // END OF API STUFF
+
     ViewPager viewPager;
     Adapter adapter;
     List<CardModel> models;
@@ -23,6 +30,13 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // API STUFF
+
+        API_key = "AIzaSyBZZYZNnJGYJ-lp8g9Xq2bbYAIT-S2x0Ew";
+        API_url =  "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants&key=" + API_key;
+
+        // END OF API STUFF
 
         models = new ArrayList<>();
         models.add(new CardModel(R.drawable.dog, "Dog", "this is a cool dog"));
