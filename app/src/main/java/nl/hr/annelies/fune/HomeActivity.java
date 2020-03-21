@@ -5,9 +5,22 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +46,10 @@ public class HomeActivity extends AppCompatActivity {
 
         // API STUFF
 
-        API_key = "AIzaSyBZZYZNnJGYJ-lp8g9Xq2bbYAIT-S2x0Ew";
-        API_url =  "https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants&key=" + API_key;
+
+        API_url =  "https://api.eet.nu/locations?type=Rotterdam";
+
+        new HomeActivity.AsyncHttpTask().execute(API_url);
 
         // END OF API STUFF
 
@@ -90,6 +105,65 @@ public class HomeActivity extends AppCompatActivity {
     public void settings(View view) {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
+    }
+
+    // API STUFF
+
+    public class AsyncHttpTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                String response = streamToString(urlConnection.getInputStream());
+                parseResult(response);
+                return result;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    String streamToString(InputStream stream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+        String data;
+        String result = "";
+
+        while ((data = bufferedReader.readLine()) != null) {
+            result += data;
+        }
+        if (null != stream) {
+            stream.close();
+        }
+
+        return result;
+    }
+
+    private void parseResult(String result) {
+        JSONObject response = null;
+        try {
+            response = new JSONObject(result);
+            JSONArray restaurants = response.optJSONArray("results");
+
+            for (int i = 0; i < restaurants.length(); i++) {
+                JSONObject restaurant = restaurants.optJSONObject(i);
+                String name = restaurant.optString("name");
+                Log.d("Restaurant names", name);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
+
+    // END OF API STUFF
 }
