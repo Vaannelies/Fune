@@ -63,28 +63,24 @@ public class HomeActivity extends AppCompatActivity {
 
         // GET LOCATION:
         client = LocationServices.getFusedLocationProviderClient(this);
-        Button button = findViewById(R.id.btnChoose);
-        button.setOnClickListener(new View.OnClickListener() {
+     
+
+        if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
-            public void onClick(View view) {
-                if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if(location != null) {
+            public void onSuccess(Location location) {
+                if(location != null) {
 //                    TextView textView = findViewById(R.id.textView2);
 ////                    textView.setText(location.toString());
-                            Log.d("Location", location.toString());
-                            Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("Location", "Unknown");
-                            Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
+                    Log.d("Location", location.toString());
+                    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("Location", "Unknown");
+                    Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
 
-                        }
-                    }
-                });
+                }
             }
         });
 
