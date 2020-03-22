@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
     List<CardModel> models;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+    private JSONArray restaurants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         // API STUFF
 
 
-        API_url =  "https://api.eet.nu/locations?type=Rotterdam";
+        API_url =  "https://api.eet.nu/venues?location_id=193&tags=has-photos";
 
         new HomeActivity.AsyncHttpTask().execute(API_url);
 
@@ -100,6 +102,9 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+
+
     }
 
     public void settings(View view) {
@@ -110,6 +115,16 @@ public class HomeActivity extends AppCompatActivity {
     // API STUFF
 
     public class AsyncHttpTask extends AsyncTask<String, Void, String> {
+
+        private boolean doNotifyDataSetChangedOnce = false;
+
+        protected void getCount() {
+            if (doNotifyDataSetChangedOnce) {
+                doNotifyDataSetChangedOnce = false;
+                adapter.notifyDataSetChanged();
+                viewPager.setAdapter(adapter);
+            }
+        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -122,11 +137,26 @@ public class HomeActivity extends AppCompatActivity {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 String response = streamToString(urlConnection.getInputStream());
                 parseResult(response);
+                for (int i=0; i<restaurants.length(); i++)
+                {
+                    JSONObject restaurant = restaurants.optJSONObject(i);
+
+                    String name = restaurant.optString("name");
+//                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
+
+                    models.add(new CardModel(R.drawable.dog, name, "this is alsooo a cool dog"));
+
+                    Log.d("poep", name);
+                }
+                doNotifyDataSetChangedOnce = true;
+                getCount();
                 return result;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+
             return null;
         }
     }
@@ -155,15 +185,26 @@ public class HomeActivity extends AppCompatActivity {
             for (int i = 0; i < restaurants.length(); i++) {
                 JSONObject restaurant = restaurants.optJSONObject(i);
                 String name = restaurant.optString("name");
-                Log.d("Restaurant names", name);
+                String desc = restaurant.optString("category");
+                String image = restaurant.optString("images","original");
+                Log.i("Restaurant names", name);
+//                (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
+
+//                models.add(new CardModel(R.drawable.dog, "Dog 3", "this is alsooo a cool dog"));
+//                models.add(new CardModel(, name, desc));
             }
+
+
+
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        restaurants = response.optJSONArray("results");
     }
+
 
     // END OF API STUFF
 }
