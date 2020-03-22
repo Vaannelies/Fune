@@ -8,6 +8,8 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -44,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     String API_url;
     String API_key;
 
+
     // END OF API STUFF
 
     ViewPager viewPager;
@@ -53,6 +57,8 @@ public class HomeActivity extends AppCompatActivity {
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private JSONArray restaurants;
     private FusedLocationProviderClient client;
+    private double lat;
+    private double lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // GET LOCATION:
         client = LocationServices.getFusedLocationProviderClient(this);
-     
+
 
         if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -76,6 +82,9 @@ public class HomeActivity extends AppCompatActivity {
 ////                    textView.setText(location.toString());
                     Log.d("Location", location.toString());
                     Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+                    String city = hereLocation(location.getLatitude(), location.getLongitude());
+                    Toast.makeText((HomeActivity.this), city, Toast.LENGTH_SHORT).show();
+
                 } else {
                     Log.d("Location", "Unknown");
                     Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
@@ -144,6 +153,28 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+
+    }
+
+
+    private String hereLocation(double lat, double lng) {
+        String cityName = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 10);
+            if(addresses.size() > 0) {
+                for(Address adr: addresses) {
+                    if(adr.getLocality() != null && adr.getLocality().length() > 0) {
+                        cityName = adr.getLocality();
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cityName;
 
     }
 
