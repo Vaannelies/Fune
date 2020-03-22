@@ -1,15 +1,25 @@
 package nl.hr.annelies.fune;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +34,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -40,11 +52,43 @@ public class HomeActivity extends AppCompatActivity {
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private JSONArray restaurants;
+    private FusedLocationProviderClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        requestPermission();
+
+        // GET LOCATION:
+        client = LocationServices.getFusedLocationProviderClient(this);
+        Button button = findViewById(R.id.btnChoose);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if(location != null) {
+//                    TextView textView = findViewById(R.id.textView2);
+////                    textView.setText(location.toString());
+                            Log.d("Location", location.toString());
+                            Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("Location", "Unknown");
+                            Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+            }
+        });
+
+        // END OF GET LOCATION
 
         // API STUFF
 
@@ -111,6 +155,7 @@ public class HomeActivity extends AppCompatActivity {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
     }
+
 
     // API STUFF
 
@@ -207,4 +252,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
     // END OF API STUFF
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
+    }
 }
