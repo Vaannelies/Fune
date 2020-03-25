@@ -45,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     // API STUFF
 
     String API_url;
+    String API_location_url;
     String API_key;
 
 
@@ -56,9 +57,12 @@ public class HomeActivity extends AppCompatActivity {
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     private JSONArray restaurants;
+    private JSONArray locations;
     private FusedLocationProviderClient client;
     private double lat;
     private double lng;
+    private String city;
+    private String location_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +86,9 @@ public class HomeActivity extends AppCompatActivity {
 ////                    textView.setText(location.toString());
                     Log.d("Location", location.toString());
                     Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
-                    String city = hereLocation(location.getLatitude(), location.getLongitude());
+                    city = hereLocation(location.getLatitude(), location.getLongitude());
                     Toast.makeText((HomeActivity.this), city, Toast.LENGTH_SHORT).show();
+                    Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
 
                 } else {
                     Log.d("Location", "Unknown");
@@ -97,10 +102,13 @@ public class HomeActivity extends AppCompatActivity {
 
         // API STUFF
 
+        API_location_url =  "https://api.eet.nu/locations";
 
-        API_url =  "https://api.eet.nu/venues?location_id=193&tags=has-photos";
 
+
+        new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
         new HomeActivity.AsyncHttpTask().execute(API_url);
+
 
         // END OF API STUFF
 
@@ -214,11 +222,60 @@ public class HomeActivity extends AppCompatActivity {
                     JSONObject restaurant = restaurants.optJSONObject(i);
 
                     String name = restaurant.optString("name");
+                    String desc = restaurant.optString("category");
 //                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
 
-                    models.add(new CardModel(R.drawable.dog, name, "this is alsooo a cool dog"));
+                    models.add(new CardModel(R.drawable.dog, name, desc));
 
                     Log.d("poep", name);
+                }
+                doNotifyDataSetChangedOnce = true;
+                getCount();
+                return result;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+    }
+
+    public class AsyncHttpTaskLocation extends AsyncTask<String, Void, String> {
+
+        private boolean doNotifyDataSetChangedOnce = false;
+
+        protected void getCount() {
+            if (doNotifyDataSetChangedOnce) {
+                doNotifyDataSetChangedOnce = false;
+                adapter.notifyDataSetChanged();
+                viewPager.setAdapter(adapter);
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String result = "";
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                String response = streamToStringLocation(urlConnection.getInputStream());
+                parseResultLocation(response);
+                for (int i=0; i<locations.length(); i++)
+                {
+                    JSONObject location = locations.optJSONObject(i);
+
+                    String name = location.optString("name");
+                    String id = location.optString("id");
+//                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
+
+
+
+                    Log.d("id", id);
                 }
                 doNotifyDataSetChangedOnce = true;
                 getCount();
@@ -275,6 +332,54 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         restaurants = response.optJSONArray("results");
+    }
+
+
+    String streamToStringLocation(InputStream stream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
+        String data;
+        String result = "";
+
+        while ((data = bufferedReader.readLine()) != null) {
+            result += data;
+        }
+        if (null != stream) {
+            stream.close();
+        }
+
+        return result;
+    }
+
+    private String parseResultLocation(String result) {
+        JSONObject response = null;
+        try {
+            response = new JSONObject(result);
+            JSONArray locations = response.optJSONArray("results");
+
+            for (int i = 0; i < locations.length(); i++) {
+                JSONObject location = locations.optJSONObject(i);
+                String name = location.optString("name");
+                String id = location.optString("id");
+                Log.i("Location names", name);
+                if (name == city) {
+                    location_id = id;
+                } else {
+                    location_id = "42";
+                }
+
+            }
+
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        locations = response.optJSONArray("results");
+        API_url =  "https://api.eet.nu/venues?location_id=" + location_id;
+        return (location_id);
     }
 
 

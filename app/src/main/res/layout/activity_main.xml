@@ -22,4 +22,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="100dp"
+        android:layout_height="74dp"
+        app:srcCompat="@drawable/eet_nu_logo_AFAFAF"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="576dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
