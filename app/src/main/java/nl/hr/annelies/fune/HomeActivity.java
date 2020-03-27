@@ -364,21 +364,16 @@ public class HomeActivity extends AppCompatActivity {
                 if (name == city) {
                     location_id = id;
                 } else {
-                    location_id = "42";
+                    location_id = "Unknown";
                 }
-
             }
-
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         locations = response.optJSONArray("results");
-        API_url =  "https://api.eet.nu/venues?location_id=" + location_id;
+        API_url =  "https://api.eet.nu/venues?location_id=42" + location_id;
+
         return (location_id);
     }
 
