@@ -81,22 +81,32 @@ public class HomeActivity extends AppCompatActivity {
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
+                Log.i("Done", "I got your location.");
                 if(location != null) {
 //                    TextView textView = findViewById(R.id.textView2);
 ////                    textView.setText(location.toString());
                     Log.d("Location", location.toString());
-                    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+                //    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
                     city = hereLocation(location.getLatitude(), location.getLongitude());
                     Toast.makeText((HomeActivity.this), city, Toast.LENGTH_SHORT).show();
                     Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
+                    lat = location.getLatitude();
+                    lng = location.getLongitude();
+
+
+                    //Only if a location was found, you can get the location_id for the location.
+                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
+
+
 
                 } else {
                     Log.d("Location", "Unknown");
                     Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
 
                 }
-            }
+               }
         });
+        Toast.makeText((HomeActivity.this), city + "hello", Toast.LENGTH_SHORT).show();
 
         // END OF GET LOCATION
 
@@ -106,8 +116,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
-        new HomeActivity.AsyncHttpTask().execute(API_url);
+
 
 
         // END OF API STUFF
@@ -175,6 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                 for(Address adr: addresses) {
                     if(adr.getLocality() != null && adr.getLocality().length() > 0) {
                         cityName = adr.getLocality();
+                        Log.i("Done", "I found the name of your city.");
                         break;
                     }
                 }
@@ -231,6 +241,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 doNotifyDataSetChangedOnce = true;
                 getCount();
+                Log.i("Done", "I found all restaurants in the city and turned them into CardModels.");
                 return result;
 
             } catch (Exception e) {
@@ -272,6 +283,14 @@ public class HomeActivity extends AppCompatActivity {
                     String name = location.optString("name");
                     String id = location.optString("id");
 //                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
+//                    Log.i("Location namessssss", city);
+//
+//                    if (name.equals(city)) {
+//                        location_id = id;
+//                        Toast.makeText(HomeActivity.this, "dit is het location_id: " + location_id, Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        location_id = "Unknown";
+//                    }
 
 
 
@@ -279,6 +298,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 doNotifyDataSetChangedOnce = true;
                 getCount();
+                Log.i("Done", "I found all locations in the eet.nu api.");
                 return result;
 
             } catch (Exception e) {
@@ -302,6 +322,7 @@ public class HomeActivity extends AppCompatActivity {
             stream.close();
         }
 
+      Log.i("Done", "I gathered all the restaurants once again so you can use them in parseResult as the data you want to turn into a string..");
         return result;
     }
 
@@ -330,6 +351,7 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.i("Done", "I turned the list of restaurants into separate restaurants and they are strings.");
 
         restaurants = response.optJSONArray("results");
     }
@@ -346,7 +368,7 @@ public class HomeActivity extends AppCompatActivity {
         if (null != stream) {
             stream.close();
         }
-
+        Log.i("Done", "I gathered all the locations once again so you can use them in parseResultLocation as the data you want to turn into a string..");
         return result;
     }
 
@@ -360,11 +382,16 @@ public class HomeActivity extends AppCompatActivity {
                 JSONObject location = locations.optJSONObject(i);
                 String name = location.optString("name");
                 String id = location.optString("id");
-                Log.i("Location names", name);
-                if (name == city) {
+//                Log.i("Location nammmmmes", name);
+//                Log.i("Location names", this.city + "hey");
+
+                if (name.equals(this.city)) {
+                    Log.i("Location names", this.city +" ========= "+name);
                     location_id = id;
+                    API_url =  "https://api.eet.nu/venues?location_id=" + location_id;
+                    new HomeActivity.AsyncHttpTask().execute(API_url);
                 } else {
-                    location_id = "Unknown";
+                    Toast.makeText(this, "No available data for your location.", Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {
@@ -372,7 +399,8 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         locations = response.optJSONArray("results");
-        API_url =  "https://api.eet.nu/venues?location_id=42" + location_id;
+
+        Log.i("Done", "I turned the list of restaurants into separate restaurants and they are strings.");
 
         return (location_id);
     }
