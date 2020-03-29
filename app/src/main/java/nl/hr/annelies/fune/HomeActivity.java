@@ -81,15 +81,16 @@ public class HomeActivity extends AppCompatActivity {
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                Log.i("Done", "I got your location.");
-                if(location != null) {
+                Log.i("Done", "I tried to get your location.");
+                if (location != null) {
+                    Log.i("Done", "I got your location.");
 //                    TextView textView = findViewById(R.id.textView2);
 ////                    textView.setText(location.toString());
                     Log.d("Location", location.toString());
-                //    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+                    //    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
                     city = hereLocation(location.getLatitude(), location.getLongitude());
                     Toast.makeText((HomeActivity.this), city, Toast.LENGTH_SHORT).show();
-                    Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
                     lat = location.getLatitude();
                     lng = location.getLongitude();
 
@@ -98,15 +99,14 @@ public class HomeActivity extends AppCompatActivity {
                     new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
 
 
-
                 } else {
-                    Log.d("Location", "Unknown");
-                    Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
+                    Log.d("Location??", "Unknown");
 
+                    Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
                 }
-               }
+            }
         });
-        Toast.makeText((HomeActivity.this), city + "hello", Toast.LENGTH_SHORT).show();
+
 
         // END OF GET LOCATION
 
@@ -233,14 +233,13 @@ public class HomeActivity extends AppCompatActivity {
 
                     String name = restaurant.optString("name");
                     String desc = restaurant.optString("category");
-//                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
-
-                    models.add(new CardModel(R.drawable.dog, name, desc));
-
+                    Toast.makeText(HomeActivity.this, name, Toast.LENGTH_SHORT).show();
+                    models.add(new CardModel(R.drawable.cooldog, name, desc));
+                    doNotifyDataSetChangedOnce = true;
+                    getCount();
                     Log.d("poep", name);
                 }
-                doNotifyDataSetChangedOnce = true;
-                getCount();
+
                 Log.i("Done", "I found all restaurants in the city and turned them into CardModels.");
                 return result;
 
@@ -296,8 +295,6 @@ public class HomeActivity extends AppCompatActivity {
 
                     Log.d("id", id);
                 }
-                doNotifyDataSetChangedOnce = true;
-                getCount();
                 Log.i("Done", "I found all locations in the eet.nu api.");
                 return result;
 
@@ -341,7 +338,7 @@ public class HomeActivity extends AppCompatActivity {
 //                (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
 
 //                models.add(new CardModel(R.drawable.dog, "Dog 3", "this is alsooo a cool dog"));
-//                models.add(new CardModel(, name, desc));
+                models.add(new CardModel(R.drawable.dog, name, desc));
             }
 
 
@@ -400,7 +397,7 @@ public class HomeActivity extends AppCompatActivity {
 
         locations = response.optJSONArray("results");
 
-        Log.i("Done", "I turned the list of restaurants into separate restaurants and they are strings.");
+        Log.i("Done", "I turned the list of locations into separate locations and they are strings.");
 
         return (location_id);
     }
