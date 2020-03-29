@@ -45,15 +45,16 @@
 
     <Button
         android:id="@+id/btnChoose"
-        android:text="Check it out!"
-        android:textColor="#fff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
         android:background="@color/cardview_dark_background"
+        android:onClick="getLocationList"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:text="Check it out!"
+        android:textColor="#fff" />
 
 </RelativeLayout>
