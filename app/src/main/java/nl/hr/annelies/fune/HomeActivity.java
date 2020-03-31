@@ -29,7 +29,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,9 +159,6 @@ public class HomeActivity extends AppCompatActivity {
                             )
                     );
                 }
-                else if(position > 4) {
-                    colors[position] = 0;
-                }
 
                 else {
                     viewPager.setBackgroundColor(colors[colors.length - 1]);
@@ -263,10 +259,9 @@ public class HomeActivity extends AppCompatActivity {
 
             TextView textView = findViewById(R.id.textView2);
             textView.setText(name);
-            String city = hereLocation(lat,lng);
             for(int i = 0; i < locations.length(); i++) {
                 JSONObject location = locations.optJSONObject(i);
-                if(location.optString("name").equals(city)) {
+                if(location.optString("name").equals(hereLocation(lat,lng))) {
                     // If there is a match between your location and a location the list,
                     // fetch the restaurants.
                     String id = location.getString("id");
@@ -276,20 +271,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
             }
-
-//            String id = JsonPath.from("results").get("results.findAll { name -> name ==" + hereLocation(lat,lng) + "}");
-
-//                                if(data.get("name").equals(city)){
-//                                    String id =  data.get("id").toString();
-//                                    getRestaurantList(id);
-//                                }
-//
-//            if(id != null) {
-//                getRestaurantList(id);
-//            }
-//            else {
-//                Log.d("Error", "No location match was found in the eet.nu.api.");
-//            }
+            doNotifyDataSetChangedOnce = true;
+            getCount();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -311,9 +294,9 @@ public class HomeActivity extends AppCompatActivity {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), "this is a cool dooog"));
+                    doNotifyDataSetChangedOnce = true;
+                    getCount();
                 }
-                doNotifyDataSetChangedOnce = true;
-                getCount();
 
 
             } else {
