@@ -103,8 +103,8 @@ public class HomeActivity extends AppCompatActivity {
                     lng = location.getLongitude();
 
 
-                    //Only if a location was found, you can get the location_id for the location.
-//                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
+                    //Only if a location was found, they app will continue.
+                                   getLocationList();
 
 
                 } else {
@@ -194,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-    public void getLocationList(View v) {
+    public void getLocationList() {
 
         Log.d(LOG_TAG_TASK, "Get list");
 
