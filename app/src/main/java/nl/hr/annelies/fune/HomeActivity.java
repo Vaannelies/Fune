@@ -29,6 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,8 +103,8 @@ public class HomeActivity extends AppCompatActivity {
                     lng = location.getLongitude();
 
 
-                    //Only if a location was found, they app will continue.
-                                   getLocationList();
+                    //Only if a location was found, you can get the location_id for the location.
+//                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
 
 
                 } else {
@@ -159,6 +160,9 @@ public class HomeActivity extends AppCompatActivity {
                             )
                     );
                 }
+                else if(position > 4) {
+                    colors[position] = 0;
+                }
 
                 else {
                     viewPager.setBackgroundColor(colors[colors.length - 1]);
@@ -190,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-    public void getLocationList() {
+    public void getLocationList(View v) {
 
         Log.d(LOG_TAG_TASK, "Get list");
 
@@ -259,20 +263,32 @@ public class HomeActivity extends AppCompatActivity {
 
             TextView textView = findViewById(R.id.textView2);
             textView.setText(name);
-            for(int i = 0; i < locations.length(); i++) {
-                JSONObject location = locations.optJSONObject(i);
-                if(location.optString("name").equals(hereLocation(lat,lng))) {
-                    // If there is a match between your location and a location the list,
-                    // fetch the restaurants.
-                    String id = location.getString("id");
-                    getRestaurantList(id);
-                } else {
-                    Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
-                }
-                //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
+//            for(int i = 0; i < locations.length(); i++) {
+//                JSONObject location = locations.optJSONObject(i);
+//                if(location.optString("name").equals(hereLocation(lat,lng))) {
+//                    // If there is a match between your location and a location the list,
+//                    // fetch the restaurants.
+//                    String id = location.getString("id");
+//                    getRestaurantList(id);
+//                } else {
+//                    Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
+//                }
+//                //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
+//            }
+
+//            String id = JsonPath.from("results").get("results.findAll { name -> name ==" + hereLocation(lat,lng) + "}");
+            String city = hereLocation(lat,lng);
+            if(data.get("name").equals(city)){
+                String id =  data.get("id").toString();
+                getRestaurantList(id);
             }
-            doNotifyDataSetChangedOnce = true;
-            getCount();
+//
+//            if(id != null) {
+//                getRestaurantList(id);
+//            }
+            else {
+                Log.d("Error", "No location match was found in the eet.nu.api.");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,9 +310,9 @@ public class HomeActivity extends AppCompatActivity {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), "this is a cool dooog"));
-                    doNotifyDataSetChangedOnce = true;
-                    getCount();
                 }
+                doNotifyDataSetChangedOnce = true;
+                getCount();
 
 
             } else {
