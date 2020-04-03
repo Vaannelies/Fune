@@ -92,8 +92,7 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i(LOG_TAG_TASK, "I tried to get your location.");
                 if (location != null) {
                     Log.i(LOG_TAG_TASK, "I got your location.");
-//                    TextView textView = findViewById(R.id.textView2);
-////                    textView.setText(location.toString());
+
                     Log.d("Location", location.toString());
                     //    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
                     city = hereLocation(location.getLatitude(), location.getLongitude());
@@ -271,8 +270,6 @@ public class HomeActivity extends AppCompatActivity {
             JSONObject firstItem = (JSONObject) locations.get(0);
             String name = (String) firstItem.get("name");
 
-            TextView textView = findViewById(R.id.textView2);
-            textView.setText(name);
             String city = hereLocation(lat,lng);
             for(int i = 0; i < locations.length(); i++) {
                 JSONObject location = locations.optJSONObject(i);
@@ -314,8 +311,6 @@ public class HomeActivity extends AppCompatActivity {
             JSONObject firstItem = (JSONObject) restaurants.get(0);
             String name = (String) firstItem.get("name");
 
-            TextView textView = findViewById(R.id.textView2);
-            textView.setText(name);
             if(restaurants != null) {
                 for (int i = 0; i < restaurants.length(); i++) {
                     JSONObject restaurant = restaurants.optJSONObject(i);
