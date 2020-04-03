@@ -70,13 +70,14 @@ public class HomeActivity extends AppCompatActivity {
     private double lng;
     private String city;
     private String location_id;
+    private TextView start_text;
     final static String LOG_TAG_TASK = "Done";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-//
+        start_text = findViewById(R.id.start_text);
         requestPermission();
 //
         // GET LOCATION:
@@ -85,6 +86,10 @@ public class HomeActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
+        }
+        else {
+            start_text.setText("Loading...");
+
         }
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
@@ -109,7 +114,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 } else {
                     Log.d("Location??", "Unknown");
-
+                    start_text.setText("Oops! I don't know where you are.");
                     Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -315,7 +320,7 @@ public class HomeActivity extends AppCompatActivity {
                 for (int i = 0; i < restaurants.length(); i++) {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
-                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), "this is a cool dooog"));
+                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category")));
                 }
                 doNotifyDataSetChangedOnce = true;
                 getCount();
