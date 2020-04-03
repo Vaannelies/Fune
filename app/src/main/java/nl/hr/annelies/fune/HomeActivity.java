@@ -105,6 +105,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     //Only if a location was found, you can get the location_id for the location.
 //                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
+                        getLocationList();
 
 
                 } else {
@@ -130,8 +131,8 @@ public class HomeActivity extends AppCompatActivity {
 //        // END OF API STUFF
 //
         models = new ArrayList<>();
-        models.add(new CardModel(R.drawable.dog, "Dog", "this is a cool dog"));
-        models.add(new CardModel(R.drawable.dog, "Dog 2", "this is also a cool dog"));
+//        models.add(new CardModel(R.drawable.dog, "Loading...", ""));
+
 
         adapter = new Adapter(models, this);
 
@@ -143,7 +144,19 @@ public class HomeActivity extends AppCompatActivity {
                 getResources().getColor(R.color.color1),
                 getResources().getColor(R.color.color2),
                 getResources().getColor(R.color.color3),
-                getResources().getColor(R.color.color4)
+                getResources().getColor(R.color.color4),
+                getResources().getColor(R.color.color5),
+                getResources().getColor(R.color.color6),
+                getResources().getColor(R.color.color7),
+                getResources().getColor(R.color.color8),
+                getResources().getColor(R.color.color9),
+                getResources().getColor(R.color.color10),
+                getResources().getColor(R.color.color11),
+                getResources().getColor(R.color.color12),
+                getResources().getColor(R.color.color13),
+                getResources().getColor(R.color.color14),
+                getResources().getColor(R.color.color15),
+                getResources().getColor(R.color.color16)
         };
 
         colors = colors_temp;
@@ -159,9 +172,6 @@ public class HomeActivity extends AppCompatActivity {
                                     colors[position + 1]
                             )
                     );
-                }
-                else if(position > 4) {
-                    colors[position] = 0;
                 }
 
                 else {
@@ -194,7 +204,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-    public void getLocationList(View v) {
+    public void getLocationList() {
 
         Log.d(LOG_TAG_TASK, "Get list");
 
@@ -263,32 +273,33 @@ public class HomeActivity extends AppCompatActivity {
 
             TextView textView = findViewById(R.id.textView2);
             textView.setText(name);
-//            for(int i = 0; i < locations.length(); i++) {
-//                JSONObject location = locations.optJSONObject(i);
-//                if(location.optString("name").equals(hereLocation(lat,lng))) {
-//                    // If there is a match between your location and a location the list,
-//                    // fetch the restaurants.
-//                    String id = location.getString("id");
-//                    getRestaurantList(id);
-//                } else {
-//                    Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
-//                }
-//                //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
-//            }
+            String city = hereLocation(lat,lng);
+            for(int i = 0; i < locations.length(); i++) {
+                JSONObject location = locations.optJSONObject(i);
+                if(location.optString("name").equals(city)) {
+                    // If there is a match between your location and a location the list,
+                    // fetch the restaurants.
+                    String id = location.getString("id");
+                    getRestaurantList(id);
+                } else {
+                    Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
+                }
+                //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
+            }
 
 //            String id = JsonPath.from("results").get("results.findAll { name -> name ==" + hereLocation(lat,lng) + "}");
-            String city = hereLocation(lat,lng);
-            if(data.get("name").equals(city)){
-                String id =  data.get("id").toString();
-                getRestaurantList(id);
-            }
+
+//                                if(data.get("name").equals(city)){
+//                                    String id =  data.get("id").toString();
+//                                    getRestaurantList(id);
+//                                }
 //
 //            if(id != null) {
 //                getRestaurantList(id);
 //            }
-            else {
-                Log.d("Error", "No location match was found in the eet.nu.api.");
-            }
+//            else {
+//                Log.d("Error", "No location match was found in the eet.nu.api.");
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -306,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
             TextView textView = findViewById(R.id.textView2);
             textView.setText(name);
             if(restaurants != null) {
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < restaurants.length(); i++) {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), "this is a cool dooog"));
