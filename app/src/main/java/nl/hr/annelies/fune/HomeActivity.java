@@ -321,7 +321,7 @@ public class HomeActivity extends AppCompatActivity {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
 
-                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category")));
+                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
 
                 }
                 doNotifyDataSetChangedOnce = true;

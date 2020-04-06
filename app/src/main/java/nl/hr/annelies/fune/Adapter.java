@@ -2,6 +2,7 @@ package nl.hr.annelies.fune;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +54,13 @@ public class Adapter extends PagerAdapter {
         desc.setText(models.get(position).getDesc());
 
 
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("param", models.get(position).getTitle());
+                intent.putExtra("name", models.get(position).getTitle());
+                intent.putExtra("id", models.get(position).getId());
                 context.startActivity(intent);
             }
         });
