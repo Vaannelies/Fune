@@ -320,7 +320,9 @@ public class HomeActivity extends AppCompatActivity {
                 for (int i = 0; i < restaurants.length(); i++) {
                     JSONObject restaurant = restaurants.optJSONObject(i);
                     Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+
                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category")));
+
                 }
                 doNotifyDataSetChangedOnce = true;
                 getCount();

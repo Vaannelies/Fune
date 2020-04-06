@@ -1,6 +1,7 @@
 package nl.hr.annelies.fune;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class Adapter extends PagerAdapter {
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
         layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.card, container, false);
 
@@ -50,6 +51,16 @@ public class Adapter extends PagerAdapter {
         imageView.setImageResource(models.get(position).getImage());
         title.setText(models.get(position).getTitle());
         desc.setText(models.get(position).getDesc());
+
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("param", models.get(position).getTitle());
+                context.startActivity(intent);
+            }
+        });
 
         container.addView(view, 0);
 
