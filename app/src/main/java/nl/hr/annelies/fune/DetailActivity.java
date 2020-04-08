@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -13,9 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
 
 import static nl.hr.annelies.fune.HomeActivity.LOG_TAG_TASK;
 
@@ -31,21 +30,25 @@ public class DetailActivity extends AppCompatActivity {
     private String city;
     private String region;
     private String country;
-
     private int rating;
     private final static String URI_RESTAURANT = "https://api.eet.nu/venues/";
-
+    private TextView tv_name;
+    private TextView tv_category;
+    private TextView tv_street;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(getIntent().getStringExtra("name"));
+        tv_name = findViewById(R.id.name);
+        tv_category = findViewById(R.id.category);
+        tv_street = findViewById(R.id.street);
+
 
         this.id = getIntent().getIntExtra("id",0);     //get the restaurant id
         fetchData();
+
     }
 
     private void fetchData() {
@@ -87,12 +90,16 @@ public class DetailActivity extends AppCompatActivity {
             telephone = (String) data.get("telephone");
             website_url = (String) data.get("website_url");
             JSONObject address = (JSONObject) data.get("address");
-            street = (String) address.get("street");
-            zipcode = (String) address.get("zipcode");
-            city = (String) address.get("city");
-            region = (String) address.get("region");
-            country = (String) address.get("country");
+                street = (String) address.get("street");
+                zipcode = (String) address.get("zipcode");
+                city = (String) address.get("city");
+                region = (String) address.get("region");
+                country = (String) address.get("country");
 
+            // Display the information
+            tv_name.setText(name);
+            tv_category.setText(category);
+            tv_street.setText(street);
 
 //            private int rating;
         }  catch (Exception e) {
@@ -100,7 +107,8 @@ public class DetailActivity extends AppCompatActivity {
             Log.i("Error", "Error in JSON.");
         }
 
-        }
+    }
+
 
 
 }
