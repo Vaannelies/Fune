@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // TODO: Handle response
-                        Log.d(LOG_TAG_TASK, "I found the data of " + getIntent().getStringExtra("name"));
+                        Log.i(LOG_TAG_TASK, "I found the data of " + getIntent().getStringExtra("name"));
                         showData(response);
 
                     }
@@ -73,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error
-                        Log.d("Error", "Failed to fetch the restaurant JSON data.");
+                        Log.i("Error", "Failed to fetch the restaurant JSON data.");
                     }
                 });
 
@@ -84,17 +84,17 @@ public class DetailActivity extends AppCompatActivity {
 
     private void showData(JSONObject data) {
         try {
-            name = (String) data.get("name");
-            Log.i("THE NAME. IS.", name);
-            category = (String) data.get("category");
-            telephone = (String) data.get("telephone");
-            website_url = (String) data.get("website_url");
+            name = data.optString("name");
+            Log.i("THE NAME. IShee.", name);
+            category = data.optString("category");
+            telephone = data.optString("telephone");
+            website_url = data.optString("website_url");
             JSONObject address = (JSONObject) data.get("address");
-                street = (String) address.get("street");
-                zipcode = (String) address.get("zipcode");
-                city = (String) address.get("city");
-                region = (String) address.get("region");
-                country = (String) address.get("country");
+                street = address.optString("street");
+                zipcode = address.optString("zipcode");
+                city = address.optString("city");
+                region = address.optString("region");
+                country =  address.optString("country");
 
             // Display the information
             tv_name.setText(name);
