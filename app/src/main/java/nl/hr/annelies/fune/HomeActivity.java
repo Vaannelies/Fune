@@ -2,11 +2,13 @@ package nl.hr.annelies.fune;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -71,13 +73,20 @@ public class HomeActivity extends AppCompatActivity {
     private String city;
     private String location_id;
     private TextView start_text;
+    private TextView tv_username;
     final static String LOG_TAG_TASK = "Done";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         start_text = findViewById(R.id.start_text);
+        tv_username = findViewById(R.id.tv_username);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String username = sharedPreferences.getString("signature", "");
+        tv_username.setText(username);
+
         requestPermission();
 //
         // GET LOCATION:
