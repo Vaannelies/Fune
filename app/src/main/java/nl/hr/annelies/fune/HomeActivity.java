@@ -44,6 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -74,6 +75,11 @@ public class HomeActivity extends AppCompatActivity {
     private String location_id;
     private TextView start_text;
     private TextView tv_username;
+    private String username;
+    private JSONObject restaurantDetailedData;
+    private JSONArray opening_hours;
+    private int today_day_number = 0;
+
     final static String LOG_TAG_TASK = "Done";
 
     @Override
@@ -84,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
         start_text = findViewById(R.id.start_text);
         tv_username = findViewById(R.id.tv_username);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String username = sharedPreferences.getString("signature", "");
+        username = sharedPreferences.getString("signature", "");
         tv_username.setText(username);
 
         requestPermission();
@@ -285,6 +291,7 @@ public class HomeActivity extends AppCompatActivity {
             String name = (String) firstItem.get("name");
 
             String city = hereLocation(lat,lng);
+
             for(int i = 0; i < locations.length(); i++) {
                 JSONObject location = locations.optJSONObject(i);
                 if(location.optString("name").equals(city)) {
@@ -298,19 +305,7 @@ public class HomeActivity extends AppCompatActivity {
                 //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
             }
 
-//            String id = JsonPath.from("results").get("results.findAll { name -> name ==" + hereLocation(lat,lng) + "}");
 
-//                                if(data.get("name").equals(city)){
-//                                    String id =  data.get("id").toString();
-//                                    getRestaurantList(id);
-//                                }
-//
-//            if(id != null) {
-//                getRestaurantList(id);
-//            }
-//            else {
-//                Log.d("Error", "No location match was found in the eet.nu.api.");
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,21 +320,116 @@ public class HomeActivity extends AppCompatActivity {
             JSONObject firstItem = (JSONObject) restaurants.get(0);
             String name = (String) firstItem.get("name");
 
+
+
+
             if(restaurants != null) {
-                for (int i = 0; i < restaurants.length(); i++) {
-                    JSONObject restaurant = restaurants.optJSONObject(i);
-                    Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+                boolean must_be_open = true;
+                if(must_be_open == false){
+                    for (int i = 0; i < restaurants.length(); i++) {
+                        JSONObject restaurant = restaurants.optJSONObject(i);
+                        Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+                        models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                    }
+                    doNotifyDataSetChangedOnce = true;
+                    getCount();
+                } else { //Check which restaurants are open right now
+                    Log.i(LOG_TAG_TASK, "Restaurants must be open.");
+                    // First, get todays date (day format)
 
-                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                    Calendar calendar = Calendar.getInstance();
+                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                    Log.i("Day of the week is", "" + day);
 
+                    switch (day) {
+                        case Calendar.SUNDAY:
+                            today_day_number = 6;
+                            break;
+                        case Calendar.MONDAY:
+                            today_day_number = 0;
+                            break;
+                        case Calendar.TUESDAY:
+                            today_day_number = 1;
+                            break;
+                        case Calendar.WEDNESDAY:
+                            today_day_number = 2;
+                            break;
+                        case Calendar.THURSDAY:
+                            today_day_number = 3;
+                            break;
+                        case Calendar.FRIDAY:
+                            today_day_number = 4;
+                            break;
+                        case Calendar.SATURDAY:
+                            today_day_number = 5;
+                            break;
+                    }
+                    Log.i("today_day_number is", "" + today_day_number);
+                    Log.i("number of restaurants", ""+ restaurants.length());
+
+                    for (int k = 0; k < restaurants.length(); k++) {
+                        Log.i("count","hoi" + k);
+                        final JSONObject restaurant = restaurants.optJSONObject(k);
+                        Log.i("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+                        // get detailed data
+                        int id = restaurant.optInt("id");
+                        fetchDetailData(id, restaurant);
+                        JSONObject restaurantDetails = restaurantDetailedData;
+//                        JSONArray openingHours = opening_hours;
+
+//                        int hello = restaurantDetailedData.optJSONArray("opening_hours").length();
+//                        Log.i("number of days is", "hello " + hello);
+//                        if (opening_hours != null) {
+//                            Log.i("opening_hours", "not empty");
+//                        } else {
+//                            Log.i("opening_hours", "empty");
+//                        }
+                        for(int j = 0; j < 5; j++) {
+//                            JSONObject dayObject = opening_hours.optJSONObject(j);
+//                            int day_number = dayObject.optInt("day");
+//                            boolean closed = dayObject.optBoolean("closed");
+//                            Log.i("JSON day is", "" + day_number);
+                            Log.i("heeeeeeeyyyyyyyyyyyyyys", "" + today_day_number);
+//                            if(day_number == today_day_number){
+//                                if(closed == false) {
+//                                    Log.i("hey", "hey " + closed);
+//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//                                } else {
+//                                    // do not display, but log I guess
+//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//                                    Log.i("hey", "hey " + closed);
+//                                }
+//                            } else {
+//                                Log.i("Day number match", "no");
+//                            }
+
+                        }
+
+                    }
+                    doNotifyDataSetChangedOnce = true;
+                    getCount();
                 }
-                doNotifyDataSetChangedOnce = true;
-                getCount();
-
 
             } else {
                 Log.d("Error", "No restaurants found.");
             }
+
+//            if(restaurants != null) {
+//                for (int i = 0; i < restaurants.length(); i++) {
+//
+//                    JSONObject restaurant = restaurants.optJSONObject(i);
+//                    Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+//
+//                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//
+//                }
+//                doNotifyDataSetChangedOnce = true;
+//                getCount();
+//
+//
+//            } else {
+//                Log.d("Error", "No restaurants found.");
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -377,211 +467,64 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(i);
     }
 //
-//
-//    // API STUFF
-//
-//    public class AsyncHttpTask extends AsyncTask<String, Void, String> {
-//
-//        private boolean doNotifyDataSetChangedOnce = false;
-//
-//        protected void getCount() {
-//            if (doNotifyDataSetChangedOnce) {
-//                doNotifyDataSetChangedOnce = false;
-//                adapter.notifyDataSetChanged();
-//                viewPager.setAdapter(adapter);
-//            }
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            String result = "";
-//            URL url;
-//            HttpURLConnection urlConnection = null;
-//
-//            try {
-//                url = new URL(urls[0]);
-//                urlConnection = (HttpURLConnection) url.openConnection();
-//                String response = streamToString(urlConnection.getInputStream());
-//                parseResult(response);
-//                for (int i=0; i<restaurants.length(); i++)
-//                {
-//                    JSONObject restaurant = restaurants.optJSONObject(i);
-//
-//                    String name = restaurant.optString("name");
-//                    String desc = restaurant.optString("category");
-//                    Toast.makeText(HomeActivity.this, name, Toast.LENGTH_SHORT).show();
-//                    models.add(new CardModel(R.drawable.cooldog, name, desc));
-//                    doNotifyDataSetChangedOnce = true;
-//                    getCount();
-//                    Log.d("poep", name);
-//                }
-//
-//                Log.i(LOG_TAG_TASK, "I found all restaurants in the city and turned them into CardModels.");
-//                return result;
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//            return null;
-//        }
-//    }
-//
-//    public class AsyncHttpTaskLocation extends AsyncTask<String, Void, String> {
-//
-//        private boolean doNotifyDataSetChangedOnce = false;
-//
-//        protected void getCount() {
-//            if (doNotifyDataSetChangedOnce) {
-//                doNotifyDataSetChangedOnce = false;
-//                adapter.notifyDataSetChanged();
-//                viewPager.setAdapter(adapter);
-//            }
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            String result = "";
-//            URL url;
-//            HttpURLConnection urlConnection = null;
-//
-//            try {
-//                url = new URL(urls[0]);
-//                urlConnection = (HttpURLConnection) url.openConnection();
-//                String response = streamToStringLocation(urlConnection.getInputStream());
-//                parseResultLocation(response);
-//                for (int i=0; i<locations.length(); i++)
-//                {
-//                    JSONObject location = locations.optJSONObject(i);
-//
-//                    String name = location.optString("name");
-//                    String id = location.optString("id");
-////                    (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
-////                    Log.i("Location namessssss", city);
-////
-////                    if (name.equals(city)) {
-////                        location_id = id;
-////                        Toast.makeText(HomeActivity.this, "dit is het location_id: " + location_id, Toast.LENGTH_SHORT).show();
-////                    } else {
-////                        location_id = "Unknown";
-////                    }
-//
-//
-//
-//                    Log.d("id", id);
-//                }
-//                Log.i(LOG_TAG_TASK, "I found all locations in the eet.nu api.");
-//                return result;
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//            return null;
-//        }
-//    }
-//
-//    String streamToString(InputStream stream) throws IOException {
-//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-//        String data;
-//        String result = "";
-//
-//        while ((data = bufferedReader.readLine()) != null) {
-//            result += data;
-//        }
-//        if (null != stream) {
-//            stream.close();
-//        }
-//
-//      Log.i(LOG_TAG_TASK, "I gathered all the restaurants once again so you can use them in parseResult as the data you want to turn into a string..");
-//        return result;
-//    }
-//
-//    private void parseResult(String result) {
-//        JSONObject response = null;
-//        try {
-//            response = new JSONObject(result);
-//            JSONArray restaurants = response.optJSONArray("results");
-//
-//            for (int i = 0; i < restaurants.length(); i++) {
-//                JSONObject restaurant = restaurants.optJSONObject(i);
-//                String name = restaurant.optString("name");
-//                String desc = restaurant.optString("category");
-//                String image = restaurant.optString("images","original");
-//                Log.i("Restaurant names", name);
-////                (Toast.makeText(this, name, Toast.LENGTH_SHORT)).show();
-//
-////                models.add(new CardModel(R.drawable.dog, "Dog 3", "this is alsooo a cool dog"));
-//                models.add(new CardModel(R.drawable.dog, name, desc));
-//            }
-//
-//
-//
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        Log.i(LOG_TAG_TASK, "I turned the list of restaurants into separate restaurants and they are strings.");
-//
-//        restaurants = response.optJSONArray("results");
-//    }
-//
-//
-//    String streamToStringLocation(InputStream stream) throws IOException {
-//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
-//        String data;
-//        String result = "";
-//
-//        while ((data = bufferedReader.readLine()) != null) {
-//            result += data;
-//        }
-//        if (null != stream) {
-//            stream.close();
-//        }
-//        Log.i(LOG_TAG_TASK, "I gathered all the locations once again so you can use them in parseResultLocation as the data you want to turn into a string..");
-//        return result;
-//    }
-//
-//    private String parseResultLocation(String result) {
-//        JSONObject response = null;
-//        try {
-//            response = new JSONObject(result);
-//            JSONArray locations = response.optJSONArray("results");
-//
-//            for (int i = 0; i < locations.length(); i++) {
-//                JSONObject location = locations.optJSONObject(i);
-//                String name = location.optString("name");
-//                String id = location.optString("id");
-////                Log.i("Location nammmmmes", name);
-////                Log.i("Location names", this.city + "hey");
-//
-//                if (name.equals(this.city)) {
-//                    Log.i("Location names", this.city +" ========= "+name);
-//                    location_id = id;
-//                    API_url =  "https://api.eet.nu/venues?location_id=" + location_id;
-//                    new HomeActivity.AsyncHttpTask().execute(API_url);
-//                } else {
-//                    Toast.makeText(this, "No available data for your location.", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        locations = response.optJSONArray("results");
-//
-//        Log.i(LOG_TAG_TASK, "I turned the list of locations into separate locations and they are strings.");
-//
-//        return (location_id);
-//    }
-//
-//
-//    // END OF API STUFF
-//
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
+    }
+
+    private void fetchDetailData(int id, final JSONObject restaurant) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        Log.d(LOG_TAG_TASK, "hey");
+        JsonObjectRequest getRestaurantData = new JsonObjectRequest(
+                Request.Method.GET,
+                "https://api.eet.nu/venues/" + id,
+                null,
+                new Response.Listener<JSONObject>() {
+                    // Additions to the Response listener:
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // TODO: Handle response
+                        Log.i(LOG_TAG_TASK, "I found the data of " + response.optString("name"));
+                        opening_hours = response.optJSONArray("opening_hours");
+                        Log.i(LOG_TAG_TASK, "Number of days is " + opening_hours.length());
+//                      showData(response);
+                        JSONObject restaurantDetailedData = response;
+
+                        for(int j = 0; j < opening_hours.length(); j++) {
+                            JSONObject dayObject = opening_hours.optJSONObject(j);
+                            int day_number = dayObject.optInt("day");
+                            boolean closed = dayObject.optBoolean("closed");
+
+                            Log.i("JSON day is", "" + day_number);
+                            Log.i("today_day_number is", "" + today_day_number);
+                            if(day_number == today_day_number){
+                                if(closed == false) {
+                                    Log.i("hey", "hey " + closed);
+                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                                } else {
+                                    // do not display, but log I guess
+//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                                    Log.i("hey", "hey " + closed);
+                                }
+                            } else {
+                                Log.i("Day number match", "no");
+                            }
+
+                        }
+                        doNotifyDataSetChangedOnce = true;
+                        getCount();
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // TODO: Handle error
+                Log.i("Error", "Failed to fetch the restaurant JSON data.");
+            }
+        });
+
+        queue.add(getRestaurantData);
+
     }
 }
