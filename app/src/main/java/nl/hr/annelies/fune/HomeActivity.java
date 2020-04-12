@@ -5,7 +5,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
-import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,11 +12,9 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,17 +29,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 
+
 import org.json.JSONArray;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,31 +44,19 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeActivity extends AppCompatActivity {
 
-    // API STUFF
-
-    String API_url;
-    String API_location_url;
-    String API_key;
-
-
-    // END OF API STUFF
 
     ViewPager viewPager;
     Adapter adapter;
     List<CardModel> models;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
-    private JSONArray restaurants;
-    private JSONArray locations;
     private FusedLocationProviderClient client;
     private double lat;
     private double lng;
     private String city;
-    private String location_id;
     private TextView start_text;
     private TextView tv_username;
     private String username;
-    private JSONObject restaurantDetailedData;
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
@@ -108,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
             start_text.setText("Loading...");
 
         }
+
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -126,6 +107,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     //Only if a location was found, you can get the location_id for the location.
 //                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
+                    int PLACE_PICKER_REQUEST = 1;
                         getLocationList();
 
 
@@ -139,22 +121,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
         // END OF GET LOCATION
-//
-//        // API STUFF
-//
-//        API_location_url =  "https://api.eet.nu/locations";
-//
-//
-//
-//
-//
-//
-//        // END OF API STUFF
-//
+
         models = new ArrayList<>();
-//        models.add(new CardModel(R.drawable.dog, "Loading...", ""));
-
-
         adapter = new Adapter(models, this);
 
         viewPager = findViewById(R.id.viewPager);
@@ -304,7 +272,6 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
                 }
-                //models.add(new CardModel(R.drawable.dog, location.optString("id"), "this is a cool doggo"));
             }
 
 
@@ -376,36 +343,6 @@ public class HomeActivity extends AppCompatActivity {
                         // get detailed data
                         int id = restaurant.optInt("id");
                         fetchDetailData(id, restaurant);
-                        JSONObject restaurantDetails = restaurantDetailedData;
-//                        JSONArray openingHours = opening_hours;
-
-//                        int hello = restaurantDetailedData.optJSONArray("opening_hours").length();
-//                        Log.i("number of days is", "hello " + hello);
-//                        if (opening_hours != null) {
-//                            Log.i("opening_hours", "not empty");
-//                        } else {
-//                            Log.i("opening_hours", "empty");
-//                        }
-                        for(int j = 0; j < 5; j++) {
-//                            JSONObject dayObject = opening_hours.optJSONObject(j);
-//                            int day_number = dayObject.optInt("day");
-//                            boolean closed = dayObject.optBoolean("closed");
-//                            Log.i("JSON day is", "" + day_number);
-                            Log.i("heeeeeeeyyyyyyyyyyyyyys", "" + today_day_number);
-//                            if(day_number == today_day_number){
-//                                if(closed == false) {
-//                                    Log.i("hey", "hey " + closed);
-//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//                                } else {
-//                                    // do not display, but log I guess
-//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//                                    Log.i("hey", "hey " + closed);
-//                                }
-//                            } else {
-//                                Log.i("Day number match", "no");
-//                            }
-
-                        }
 
                     }
                     doNotifyDataSetChangedOnce = true;
@@ -416,22 +353,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("Error", "No restaurants found.");
             }
 
-//            if(restaurants != null) {
-//                for (int i = 0; i < restaurants.length(); i++) {
-//
-//                    JSONObject restaurant = restaurants.optJSONObject(i);
-//                    Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
-//
-//                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//
-//                }
-//                doNotifyDataSetChangedOnce = true;
-//                getCount();
-//
-//
-//            } else {
-//                Log.d("Error", "No restaurants found.");
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -486,26 +407,21 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // TODO: Handle response
-                        Log.i(LOG_TAG_TASK, "I found the data of " + response.optString("name"));
+//                        Log.i(LOG_TAG_TASK, "I found the data of " + response.optString("name"));
                         opening_hours = response.optJSONArray("opening_hours");
-                        Log.i(LOG_TAG_TASK, "Number of days is " + opening_hours.length());
-//                      showData(response);
-                        JSONObject restaurantDetailedData = response;
+//                        Log.i(LOG_TAG_TASK, "Number of days is " + opening_hours.length());
 
                         for(int j = 0; j < opening_hours.length(); j++) {
                             JSONObject dayObject = opening_hours.optJSONObject(j);
                             int day_number = dayObject.optInt("day");
                             boolean closed = dayObject.optBoolean("closed");
-
-                            Log.i("JSON day is", "" + day_number);
-                            Log.i("today_day_number is", "" + today_day_number);
                             if(day_number == today_day_number){
                                 if(closed == false) {
                                     Log.i("hey", "hey " + closed);
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
                                 } else {
                                     // do not display, but log I guess
-//                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//
                                     Log.i("hey", "hey " + closed);
                                 }
                             } else {
