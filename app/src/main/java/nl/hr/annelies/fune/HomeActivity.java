@@ -78,6 +78,7 @@ public class HomeActivity extends AppCompatActivity {
     private String username;
     private JSONObject restaurantDetailedData;
     private JSONArray opening_hours;
+    private boolean must_be_open_today;
     private int today_day_number = 0;
 
     final static String LOG_TAG_TASK = "Done";
@@ -92,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         username = sharedPreferences.getString("signature", "");
         tv_username.setText(username);
+        must_be_open_today = sharedPreferences.getBoolean("must_be_open_today", false);
 
         requestPermission();
 //
@@ -324,8 +326,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
             if(restaurants != null) {
-                boolean must_be_open = true;
-                if(must_be_open == false){
+                Log.i("Must be open today", ""+ must_be_open_today);
+                if(must_be_open_today == false){
                     for (int i = 0; i < restaurants.length(); i++) {
                         JSONObject restaurant = restaurants.optJSONObject(i);
                         Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
