@@ -15,6 +15,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,8 @@ public class HomeActivity extends AppCompatActivity {
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
+    private ListView listView;
+    ArrayList<String> arrayList;
 
     final static String LOG_TAG_TASK = "Done";
 
@@ -81,13 +85,14 @@ public class HomeActivity extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(this);
 
 
-        if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        else {
-            start_text.setText("Loading...");
+    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        return;
+    } else {
+        start_text.setText("Loading...");
+        requestPermission();
 
-        }
+    }
+
 
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
@@ -179,8 +184,15 @@ public class HomeActivity extends AppCompatActivity {
             }
             });
 
+            listView = (ListView) findViewById(R.id.listview);
 
+            arrayList = new ArrayList<>();
 
+            arrayList.add("hey");
+
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
+
+            listView.setAdapter(arrayAdapter);
     }
 
     private boolean doNotifyDataSetChangedOnce = false;
@@ -299,6 +311,7 @@ public class HomeActivity extends AppCompatActivity {
                         JSONObject restaurant = restaurants.optJSONObject(i);
                         Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                         models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                        arrayList.add(restaurant.optString("name"));
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
@@ -419,6 +432,7 @@ public class HomeActivity extends AppCompatActivity {
                                 if(closed == false) {
                                     Log.i("hey", "hey " + closed);
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+                                    arrayList.add(restaurant.optString("name"));
                                 } else {
                                     // do not display, but log I guess
 //

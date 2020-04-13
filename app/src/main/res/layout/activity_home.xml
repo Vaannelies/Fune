@@ -48,10 +48,11 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
         android:clipToPadding="false"
         android:foregroundGravity="center"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/start_text">
+
 
     </androidx.viewpager.widget.ViewPager>
 
@@ -63,5 +64,14 @@
         android:layout_marginTop="160dp"
         android:textColor="#0000FF"
         tools:text="Hey name" />
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="339dp"
+
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="#5EFFFFFF" />
 
 </RelativeLayout>
