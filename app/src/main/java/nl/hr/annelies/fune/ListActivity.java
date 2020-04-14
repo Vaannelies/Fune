@@ -2,9 +2,13 @@ package nl.hr.annelies.fune;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -31,7 +35,7 @@ import static nl.hr.annelies.fune.HomeActivity.LOG_TAG_TASK;
 public class ListActivity extends AppCompatActivity {
 
     private final static String URI_RESTAURANT = "https://api.eet.nu/venues?location_id=";
-    private int id;
+    private int restaurant_id;
     private String name;
     private String category;
     private ListView listView;
@@ -91,11 +95,15 @@ public class ListActivity extends AppCompatActivity {
 
             for(int i = 0; i < restaurants.length(); i++) {
                 JSONObject restaurant = restaurants.optJSONObject(i);
-                id = restaurant.optInt("id");
+                restaurant_id = restaurant.optInt("id");
                 name = restaurant.optString("name");
-                Log.i("THE NAME. IS.", name);
+//                Log.i("THE NAME. IS.", name);
 
-                arrayList.add(name);
+                arrayList.add(""+restaurant_id);
+                // Set an item click listener for ListView
+
+
+
             }
 
 
@@ -115,5 +123,27 @@ public class ListActivity extends AppCompatActivity {
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
         listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get the selected item text from ListView
+                String selectedItem = (String) parent.getItemAtPosition(position);
+
+                // Go to the DetailActivity
+
+                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("id", selectedItem);
+                startActivity(intent);
+            }
+        });
     }
+
+
+
+
+
+
+
 }

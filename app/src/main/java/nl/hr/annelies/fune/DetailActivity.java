@@ -20,7 +20,7 @@ import static nl.hr.annelies.fune.HomeActivity.LOG_TAG_TASK;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private int id;
+    private String id;
     private String name;
     private String category;
     private String telephone;
@@ -46,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_street = findViewById(R.id.street);
 
 
-        this.id = getIntent().getIntExtra("id",0);     //get the restaurant id
+        this.id = getIntent().getStringExtra("id");     //get the restaurant id
         fetchData();
 
     }
