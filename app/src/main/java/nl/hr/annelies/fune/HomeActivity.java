@@ -56,14 +56,14 @@ public class HomeActivity extends AppCompatActivity {
     private double lat;
     private double lng;
     private String city;
+    protected static String location_id;
     private TextView start_text;
     private TextView tv_username;
     private String username;
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
-    private ListView listView;
-    ArrayList<String> arrayList;
+
 
     final static String LOG_TAG_TASK = "Done";
 
@@ -184,15 +184,7 @@ public class HomeActivity extends AppCompatActivity {
             }
             });
 
-            listView = (ListView) findViewById(R.id.listview);
 
-            arrayList = new ArrayList<>();
-
-            arrayList.add("hey");
-
-            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-
-            listView.setAdapter(arrayAdapter);
     }
 
     private boolean doNotifyDataSetChangedOnce = false;
@@ -267,6 +259,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void updateLocations(JSONObject data) {
+
         try {
             JSONArray locations = (JSONArray) data.get("results");
             JSONObject firstItem = (JSONObject) locations.get(0);
@@ -279,8 +272,8 @@ public class HomeActivity extends AppCompatActivity {
                 if(location.optString("name").equals(city)) {
                     // If there is a match between your location and a location the list,
                     // fetch the restaurants.
-                    String id = location.getString("id");
-                    getRestaurantList(id);
+                    location_id = location.getString("id");
+                    getRestaurantList(location_id);
                 } else {
                     Log.d("Error", "No location match was found in the eet.nu.api. " + location.optString("name") + " != " + lat + ", " + lng);
                 }
@@ -292,6 +285,7 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d("Error", "Error in JSON.");
         }
+
         // Added try and catch clauses to handle (unexpected) data, that's not called 'results'.
     }
 
@@ -307,11 +301,10 @@ public class HomeActivity extends AppCompatActivity {
             if(restaurants != null) {
                 Log.i("Must be open today", ""+ must_be_open_today);
                 if(must_be_open_today == false){
-                    for (int i = 0; i < restaurants.length(); i++) {
+                    for (int i = 0; i <6; i++) {
                         JSONObject restaurant = restaurants.optJSONObject(i);
                         Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                         models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-                        arrayList.add(restaurant.optString("name"));
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
@@ -349,7 +342,7 @@ public class HomeActivity extends AppCompatActivity {
                     Log.i("today_day_number is", "" + today_day_number);
                     Log.i("number of restaurants", ""+ restaurants.length());
 
-                    for (int k = 0; k < restaurants.length(); k++) {
+                    for (int k = 0; k < 6; k++) {
                         Log.i("count","hoi" + k);
                         final JSONObject restaurant = restaurants.optJSONObject(k);
                         Log.i("Restaurant", restaurant.optString("name" + "oooooooooooo"));
@@ -402,6 +395,11 @@ public class HomeActivity extends AppCompatActivity {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
     }
+    public void restaurantList(View view) {
+        Intent i = new Intent(this, ListActivity.class);
+        i.putExtra("location_id", location_id);
+        startActivity(i);
+    }
 //
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
@@ -432,7 +430,6 @@ public class HomeActivity extends AppCompatActivity {
                                 if(closed == false) {
                                     Log.i("hey", "hey " + closed);
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-                                    arrayList.add(restaurant.optString("name"));
                                 } else {
                                     // do not display, but log I guess
 //

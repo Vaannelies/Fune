@@ -82,6 +82,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
 
+
     private void showData(JSONObject data) {
         try {
             name = data.optString("name");
@@ -95,6 +96,7 @@ public class DetailActivity extends AppCompatActivity {
                 city = address.optString("city");
                 region = address.optString("region");
                 country =  address.optString("country");
+
 
             // Display the information
             tv_name.setText(name);
