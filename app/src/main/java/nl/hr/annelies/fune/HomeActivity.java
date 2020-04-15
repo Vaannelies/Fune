@@ -65,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean must_be_open_today;
     private int today_day_number = 0;
     private Button btn_all_restaurants;
+    public static JSONArray restaurants_array;
 
 
     final static String LOG_TAG_TASK = "Done";
@@ -298,7 +299,7 @@ public class HomeActivity extends AppCompatActivity {
             String name = (String) firstItem.get("name");
 
 
-
+//            restaurants_array = null;
 
             if(restaurants != null) {
                 Log.i("Must be open today", ""+ must_be_open_today);
@@ -307,6 +308,7 @@ public class HomeActivity extends AppCompatActivity {
                         JSONObject restaurant = restaurants.optJSONObject(i);
                         Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                         models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//                        restaurants_array.put(restaurant);
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
@@ -436,7 +438,9 @@ public class HomeActivity extends AppCompatActivity {
                             if(day_number == today_day_number){
                                 if(closed == false) {
                                     Log.i("hey", "hey " + closed);
+
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+//                                    restaurants_array.put(restaurant);
                                 } else {
                                     // do not display, but log I guess
 //
