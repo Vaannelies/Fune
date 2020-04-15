@@ -11,13 +11,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.DarkColorActionBar">
         <activity android:name=".ListActivity"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
         <activity android:name=".HomeActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

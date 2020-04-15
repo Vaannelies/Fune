@@ -25,4 +25,5 @@
     <string name="loading">Loading...</string>
     <string name="username">default</string>
     <string name="btn_list">All restaurants</string>
+    <string name="settings_image">Settings</string>
 </resources>
