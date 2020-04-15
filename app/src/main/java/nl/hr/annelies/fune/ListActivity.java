@@ -39,17 +39,21 @@ public class ListActivity extends AppCompatActivity {
     private String name;
     private String category;
     private ListView listView;
-    ArrayList<String> arrayList;
+    ArrayList<ListItemModel> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        listView = findViewById(R.id.listview);
+
+        arrayList = new ArrayList<>();
+        arrayList.add(new ListItemModel(1, "hey", "heyyy"));
+        Log.i(LOG_TAG_TASK, "Created an array");
+
         fetchData();
 
-        listView = findViewById(R.id.listview);
-        arrayList = new ArrayList<>();
 
 
 
@@ -97,12 +101,14 @@ public class ListActivity extends AppCompatActivity {
                 JSONObject restaurant = restaurants.optJSONObject(i);
                 restaurant_id = restaurant.optInt("id");
                 name = restaurant.optString("name");
+                category = restaurant.optString("category");
 //                Log.i("THE NAME. IS.", name);
 
-                arrayList.add(""+restaurant_id);
+
+
+                arrayList.add(new ListItemModel(restaurant_id, name, category));
+
                 // Set an item click listener for ListView
-
-
 
             }
 
@@ -121,23 +127,30 @@ public class ListActivity extends AppCompatActivity {
             Log.i("Error", "Error in JSON.");
         }
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-        listView.setAdapter(arrayAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get the selected item text from ListView
-                String selectedItem = (String) parent.getItemAtPosition(position);
+//
+        AdapterListView adapter = new AdapterListView(this, arrayList);
+//
+        listView.setAdapter(adapter);
 
-                // Go to the DetailActivity
 
-                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("id", selectedItem);
-                startActivity(intent);
-            }
-        });
+//        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
+
+
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // Get the selected item text from ListView
+//                String selectedItem = (String) parent.getItemAtPosition(position);
+//
+//                // Go to the DetailActivity
+//
+//                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("id", selectedItem);
+//                startActivity(intent);
+//            }
+//        });
     }
 
 

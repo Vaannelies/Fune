@@ -11,7 +11,8 @@
         android:id="@+id/listview"
         android:layout_width="307dp"
         android:layout_height="464dp"
-
+        android:divider="#F1D5FF"
+        android:dividerHeight="1sp"
         android:background="@drawable/rounded_corners"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

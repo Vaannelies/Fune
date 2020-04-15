@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     ViewPager viewPager;
-    Adapter adapter;
+    AdapterViewPager adapter;
     List<CardModel> models;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity {
         // END OF GET LOCATION
 
         models = new ArrayList<>();
-        adapter = new Adapter(models, this);
+        adapter = new AdapterViewPager(models, this);
 
         viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);

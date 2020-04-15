@@ -15,13 +15,13 @@ import androidx.viewpager.widget.PagerAdapter;
 import java.util.List;
 
 //this class contains the cards (CardModel items)
-public class Adapter extends PagerAdapter {
+public class AdapterViewPager extends PagerAdapter {
 
     private List<CardModel> models;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public Adapter(List<CardModel> models, Context context) {
+    public AdapterViewPager(List<CardModel> models, Context context) {
         this.models = models;
         this.context = context;
     }
