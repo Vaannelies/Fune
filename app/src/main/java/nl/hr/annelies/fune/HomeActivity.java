@@ -361,7 +361,7 @@ public class HomeActivity extends AppCompatActivity {
                     doNotifyDataSetChangedOnce = true;
                     getCount();
 
-                    btn_all_restaurants.setVisibility(View.VISIBLE);
+//                    btn_all_restaurants.setVisibility(View.VISIBLE);
                 }
 
             } else {
