@@ -12,10 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.DarkColorActionBar">
-        <activity android:name=".ListActivity"></activity>
+        <activity
+            android:name=".ListActivity"
+            android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".HomeActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -25,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity" />
+        <activity android:name=".DetailActivity"
+            android:parentActivityName=".HomeActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -46,6 +46,10 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        getSupportActionBar().setTitle("All restaurants");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         listView = findViewById(R.id.listview);
 
         arrayList = new ArrayList<>();

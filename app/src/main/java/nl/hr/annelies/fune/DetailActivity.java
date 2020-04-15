@@ -41,6 +41,9 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        getSupportActionBar().setTitle("Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         tv_name = findViewById(R.id.name);
         tv_category = findViewById(R.id.category);
         tv_street = findViewById(R.id.street);
