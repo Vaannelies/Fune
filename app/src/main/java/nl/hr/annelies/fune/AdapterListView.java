@@ -41,14 +41,14 @@ public class AdapterListView extends BaseAdapter {
 
         convertView = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
 
-        TextView id = convertView.findViewById(R.id.id);
+
         TextView name = convertView.findViewById(R.id.title);
         TextView category = convertView.findViewById(R.id.desc);
         Log.i("adapter", arr.get(position).getName());
 //        Log.i("adapter", name);
 
 
-//        id.setText("hoi" + arr.get(position).getId());
+
         name.setText(arr.get(position).getName());
         category.setText(arr.get(position).getCategory());
 

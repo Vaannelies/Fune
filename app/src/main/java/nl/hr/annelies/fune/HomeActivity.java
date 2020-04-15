@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
+    private Button btn_all_restaurants;
 
 
     final static String LOG_TAG_TASK = "Done";
@@ -78,6 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         username = sharedPreferences.getString("signature", "");
         tv_username.setText(username);
         must_be_open_today = sharedPreferences.getBoolean("must_be_open_today", false);
+        btn_all_restaurants = findViewById(R.id.btn_list);
 
         requestPermission();
 //
@@ -183,7 +186,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
             });
-
 
     }
 
@@ -308,6 +310,9 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
+
+                    btn_all_restaurants.setVisibility(View.VISIBLE);
+
                 } else { //Check which restaurants are open right now
                     Log.i(LOG_TAG_TASK, "Restaurants must be open.");
                     // First, get todays date (day format)
@@ -353,6 +358,8 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
+
+                    btn_all_restaurants.setVisibility(View.VISIBLE);
                 }
 
             } else {
@@ -442,6 +449,8 @@ public class HomeActivity extends AppCompatActivity {
                         }
                         doNotifyDataSetChangedOnce = true;
                         getCount();
+
+                        btn_all_restaurants.setVisibility(View.VISIBLE);
 
                     }
                 }, new Response.ErrorListener() {
