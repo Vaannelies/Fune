@@ -29,6 +29,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 
@@ -43,10 +49,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
     ViewPager viewPager;
@@ -67,6 +72,7 @@ public class HomeActivity extends AppCompatActivity {
     private int today_day_number = 0;
     private Button btn_all_restaurants;
     public static JSONArray restaurants_array;
+    private GoogleMap mMap;
 
 
     final static String LOG_TAG_TASK = "Done";
@@ -90,7 +96,7 @@ public class HomeActivity extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(this);
 
 
-    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         return;
     } else {
         start_text.setText("Loading...");
@@ -113,7 +119,12 @@ public class HomeActivity extends AppCompatActivity {
 //                    Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
                     lat = location.getLatitude();
                     lng = location.getLongitude();
+                    Log.i("latlatlat", ""+lat);
+                    Log.i("lnglnglng", ""+lng);
 
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(HomeActivity.this);
 
                     //Only if a location was found, you can get the location_id for the location.
 //                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
@@ -131,6 +142,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
         // END OF GET LOCATION
+
+
 
         models = new ArrayList<>();
         adapter = new AdapterViewPager(models, this);
@@ -189,6 +202,29 @@ public class HomeActivity extends AppCompatActivity {
             }
             });
 
+    }
+
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        Log.i("Latitude", "" + lat);
+        Log.i("Longitude", "" + lng);
+
+        LatLng sydney = new LatLng(lat, lng);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     private boolean doNotifyDataSetChangedOnce = false;
@@ -412,7 +448,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 //
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
     private void fetchDetailData(int id, final JSONObject restaurant) {

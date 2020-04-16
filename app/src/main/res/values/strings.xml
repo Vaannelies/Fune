@@ -26,4 +26,5 @@
     <string name="username">default</string>
     <string name="btn_list">All restaurants</string>
     <string name="settings_image">Settings</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
