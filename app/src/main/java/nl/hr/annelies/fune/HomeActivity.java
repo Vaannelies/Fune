@@ -1,5 +1,7 @@
 package nl.hr.annelies.fune;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
@@ -14,7 +16,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -29,6 +33,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 
@@ -45,7 +54,7 @@ import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
     ViewPager viewPager;
@@ -65,8 +74,9 @@ public class HomeActivity extends AppCompatActivity {
     private boolean must_be_open_today;
     private int today_day_number = 0;
     private Button btn_all_restaurants;
-    public static JSONArray restaurants_array;
-
+    public JSONArray restaurants_array;
+    private MapView mMapView;
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     final static String LOG_TAG_TASK = "Done";
 
@@ -81,7 +91,8 @@ public class HomeActivity extends AppCompatActivity {
         username = sharedPreferences.getString("signature", "");
         tv_username.setText(username);
         must_be_open_today = sharedPreferences.getBoolean("must_be_open_today", false);
-        btn_all_restaurants = findViewById(R.id.btn_list);
+//        mMapView = (MapView) findViewById(R.id.mapView);
+
 
         requestPermission();
 //
@@ -130,6 +141,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
         // END OF GET LOCATION
+
+        initGoogleMaps(savedInstanceState);
 
         models = new ArrayList<>();
         adapter = new AdapterViewPager(models, this);
@@ -188,6 +201,33 @@ public class HomeActivity extends AppCompatActivity {
             }
             });
 
+        btn_all_restaurants = findViewById(R.id.btn_list);
+
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_home, container, false);
+        View recyclerView = view.findViewById(R.id.recycler_view);
+        mMapView = (MapView) view.findViewById(R.id.mapView);
+
+        initRecyclerView();
+        initGoogleMaps(savedInstanceState);
+        return view;
+    }
+
+    private void initGoogleMaps(Bundle savedInstanceState) {
+        // MAP
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+        mMapView.onCreate(mapViewBundle);
+        mMapView.getMapAsync(this);
+        // END OF MAP
+    }
+
+    private void initRecyclerView() {
+        
     }
 
     private boolean doNotifyDataSetChangedOnce = false;
@@ -306,9 +346,10 @@ public class HomeActivity extends AppCompatActivity {
                 if(must_be_open_today == false){
                     for (int i = 0; i <6; i++) {
                         JSONObject restaurant = restaurants.optJSONObject(i);
+//                        restaurants_array.put(restaurant);
                         Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                         models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//                        restaurants_array.put(restaurant);
+
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
@@ -407,6 +448,7 @@ public class HomeActivity extends AppCompatActivity {
     public void restaurantList(View view) {
         Intent i = new Intent(this, ListActivity.class);
         i.putExtra("location_id", location_id);
+//        i.putExtra("jsonArray", restaurants_array.toString());
         startActivity(i);
     }
 //
@@ -438,9 +480,9 @@ public class HomeActivity extends AppCompatActivity {
                             if(day_number == today_day_number){
                                 if(closed == false) {
                                     Log.i("hey", "hey " + closed);
-
-                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
 //                                    restaurants_array.put(restaurant);
+                                    models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
+
                                 } else {
                                     // do not display, but log I guess
 //
@@ -468,5 +510,61 @@ public class HomeActivity extends AppCompatActivity {
 
         queue.add(getRestaurantData);
 
+    }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    @Override
+    protected void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
     }
 }

@@ -21,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -67,10 +68,20 @@ public class ListActivity extends AppCompatActivity {
 
         Log.i(LOG_TAG_TASK, "Created an array");
 
+//        String jsonArray = getIntent().getStringExtra("jsonArray");
 
 
         fetchData();
-
+//
+//        try {
+//            JSONArray array = new JSONArray(jsonArray);
+//            for(int i = 0; i < array.length(); i++) {
+//                JSONObject restaurant = array.optJSONObject(i);
+//                Log.i("HET RESTAURANT ISYESS", restaurant.optString("name"));
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
