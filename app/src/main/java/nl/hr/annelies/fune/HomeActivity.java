@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomeActivity extends AppCompatActivity {
@@ -89,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(this);
 
 
-    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         return;
     } else {
         start_text.setText("Loading...");
@@ -411,7 +412,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 //
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
     }
 
     private void fetchDetailData(int id, final JSONObject restaurant) {
