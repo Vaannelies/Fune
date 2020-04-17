@@ -57,25 +57,33 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
+    // VIEW PAGER
     ViewPager viewPager;
     AdapterViewPager adapter;
     List<CardModel> models;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
+    // LOCATION
     private FusedLocationProviderClient client;
     private double lat;
     private double lng;
     private String city;
+
+    // URI's
     final static String URI_LOCATION_SPECIFIC = "https://api.eet.nu/venues?location_id=";
     final static String URI_LOCATIONS = "https://api.eet.nu/locations";
+    private final static String URI_RESTAURANT = "https://api.eet.nu/venues/";
     protected static String location_id;
     private TextView start_text;
     private TextView tv_username;
     private String username;
-    private final static String URI_RESTAURANT = "https://api.eet.nu/venues/";
+
+    // CHECKING IF OPEN
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
+
     private Button btn_all_restaurants;
     public static JSONArray restaurants_array;
     private GoogleMap mMap;
@@ -92,14 +100,19 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         getSupportActionBar().setTitle(R.string.app_name);
 
 
+        // DEFINE ITEMS
+        btn_all_restaurants = findViewById(R.id.btn_list);
+        start_text = findViewById(R.id.start_text); // LIKE "LOADING" OR "UNKNOWN LOCATION"
+        tv_username = findViewById(R.id.tv_username); // MORE LIKE A RANDOM PERSONAL MESSAGE OPTION
 
-        start_text = findViewById(R.id.start_text);
-        tv_username = findViewById(R.id.tv_username);
+        // SHARED PREFERENCES --> SETTINGS
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         username = sharedPreferences.getString("signature", "");
         tv_username.setText(username);
+
         must_be_open_today = sharedPreferences.getBoolean("must_be_open_today", false);
-        btn_all_restaurants = findViewById(R.id.btn_list);
+
 
         requestPermission();
 //
@@ -107,15 +120,14 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         client = LocationServices.getFusedLocationProviderClient(this);
 
 
-    if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        return;
-    } else {
-        start_text.setText(R.string.loading);
-        requestPermission();
+        if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        } else {
+            start_text.setText(R.string.loading);
+            requestPermission();
+        }
 
-    }
-
-
+        // GET THE LOCATION
         client.getLastLocation().addOnSuccessListener(HomeActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -124,28 +136,31 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.i(LOG_TAG_TASK, "I got your location.");
 
                     Log.d("Location", location.toString());
-                    //    Toast.makeText((HomeActivity.this), location.toString(), Toast.LENGTH_SHORT).show();
+
+                    // EXECUTE 'HERELOCATION' TO FIND THE NAME OF THE CITY YOU'RE IN (BASED ON COORDINATES)
                     city = hereLocation(location.getLatitude(), location.getLongitude());
+
+                    // DISPLAY CITY ON DEVICE
                     Toast.makeText((HomeActivity.this), city, Toast.LENGTH_SHORT).show();
-//                    Toast.makeText((HomeActivity.this), API_url, Toast.LENGTH_SHORT).show();
+
+
+                    // COORDINATES
                     lat = location.getLatitude();
                     lng = location.getLongitude();
-                    Log.i("latlatlat", ""+lat);
-                    Log.i("lnglnglng", ""+lng);
+
 
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     mapFragment.getMapAsync(HomeActivity.this);
 
-                    //Only if a location was found, you can get the location_id for the location.
-//                    new HomeActivity.AsyncHttpTaskLocation().execute(API_location_url);
+                    //Only if a location was found, you can get the location_id for the location (from the eet.nu API)
                     int PLACE_PICKER_REQUEST = 1;
                         getLocationList();
 
 
                 } else {
                     Log.d("Location??", "Unknown");
-                    start_text.setText(R.string.unknown_location);
+                    start_text.setText(R.string.unknown_location); // TELL THE USER THAT THE LOCATION IS UNKNOWN
                     Toast.makeText((HomeActivity.this), R.string.unknown_location, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -442,6 +457,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+    // GETTING THE NAME OF THE CITY BASED ON YOUR COORDINATES
     private String hereLocation(double lat, double lng) {
         String cityName = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
