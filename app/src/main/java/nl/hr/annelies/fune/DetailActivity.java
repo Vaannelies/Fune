@@ -57,6 +57,8 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    // FETCH RESTAURANT DATA
+
     private void fetchData() {
         RequestQueue queue = Volley.newRequestQueue(this);
         Log.d(LOG_TAG_TASK, "hey");
@@ -87,7 +89,7 @@ public class DetailActivity extends AppCompatActivity {
 
             }
 
-
+// FETCH DETAILED INFO AND DISPLAY
 
     private void showData(JSONObject data) {
         try {

@@ -329,7 +329,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    // GET ALL THE RESTAURANTS THAT ARE AT MY LOCATION (IN THE EET.NU API)
+    // FETCH ALL THE RESTAURANTS THAT ARE AT MY LOCATION (IN THE EET.NU API)
 
     public void getRestaurantList(String location_id) {
 

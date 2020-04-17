@@ -105,78 +105,27 @@ public class ListActivity extends AppCompatActivity {
         queue.add(getRestaurantData);
 
     }
-//
-//    private void showData(JSONArray restaurants) {
-//        try {
-//
-//
-//
-//            for(int i = 0; i < restaurants.length(); i++) {
-//                JSONObject restaurant = restaurants.optJSONObject(i);
-//                restaurant_id = restaurant.optInt("id");
-//                name = restaurant.optString("name");
-//                category = restaurant.optString("category");
-////                Log.i("THE NAME. IS.", name);
-//
-//
-//
-//                arrayList.add(new ListItemModel(restaurant_id, name, category));
-//
-//                // Set an item click listener for ListView
-//
-//            }
-//
-//
-//
-//
-//            // Display the information
-////            tv_name.setText(name);
-////            tv_category.setText(category);
-////            tv_street.setText(street);
-//
-//
-////            private int rating;
-//        }  catch (Exception e) {
-//            e.printStackTrace();
-//            Log.i("Error", "Error in JSON.");
-//        }
-//
-//
-////
-//        AdapterListView adapter = new AdapterListView(this, arrayList);
-////
-//        listView.setAdapter(adapter);
-//
-//    }
-
-
 
     private void showData(JSONObject data) {
         try {
 
             JSONArray restaurants = data.optJSONArray("results");
-
-
-            // Set an item click listener for ListView
-
             if (restaurants != null) {
                 Log.i("Must be open today", "" + must_be_open_today);
                 if (must_be_open_today == false) {
                     for (int i = 0; i < restaurants.length(); i++) {
                         JSONObject restaurant = restaurants.optJSONObject(i);
-                        Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
                         restaurant_id = restaurant.optInt("id");
                         name = restaurant.optString("name");
                         category = restaurant.optString("category");
 
+                        // ADD RESTAURANT TO LIST
                         arrayList.add(new ListItemModel(restaurant_id, name, category));
-
                         AdapterListView adapter = new AdapterListView(this, arrayList);
-////
                         listView.setAdapter(adapter);
                     }
 
-
+                    // ONLY THE RESTAURANTS THAT ARE OPEN TODAY
                 } else { //Check which restaurants are open right now
                     Log.i(LOG_TAG_TASK, "Restaurants must be open.");
                     // First, get todays date (day format)
@@ -211,19 +160,15 @@ public class ListActivity extends AppCompatActivity {
                     Log.i("today_day_number is", "" + today_day_number);
                     Log.i("number of restaurants", "" + restaurants.length());
 
+
                     for (int k = 0; k < restaurants.length(); k++) {
                         Log.i("count", "hoi" + k);
                         final JSONObject restaurant = restaurants.optJSONObject(k);
-                        Log.i("Restaurant", restaurant.optString("name" + "oooooooooooo"));
-                        // get detailed data
+                        // get detailed data, find out if it's open today, and then add to the list
                         int id = restaurant.optInt("id");
                         fetchDetailData(id, restaurant);
-
                     }
-//                    arrayList.add(new ListItemModel(restaurant_id, name, category));
-//
                 }
-
             } else {
                 Log.d("Error", "No restaurants found.");
             }
@@ -233,24 +178,7 @@ public class ListActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d("Error", "Error in JSON.");
         }
-
-
-//        AdapterListView adapter = new AdapterListView(this, arrayList);
-////
-//        listView.setAdapter(adapter);
     }
-
-
-    // Display the information
-//            tv_name.setText(name);
-//            tv_category.setText(category);
-//            tv_street.setText(street);
-
-
-    //
-
-
-
 
     private void fetchDetailData(int id, final JSONObject restaurant) {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -265,15 +193,17 @@ public class ListActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // TODO: Handle response
-//                        Log.i(LOG_TAG_TASK, "I found the data of " + response.optString("name"));
-                        opening_hours = response.optJSONArray("opening_hours");
-//                        Log.i(LOG_TAG_TASK, "Number of days is " + opening_hours.length());
 
+                        // FOR EACH RESTAURANT, CHECK IF THERE IS INFO ABOUT THE OPENING HOURS FOR EACH DAY OF THE WEEK
+                        opening_hours = response.optJSONArray("opening_hours");
+
+                        // FOR EACH DAY OF THE WEEK, CHECK IF THE RESTAURANT IS OPEN OR NOT
                         for(int j = 0; j < opening_hours.length(); j++) {
                             JSONObject dayObject = opening_hours.optJSONObject(j);
                             int day_number = dayObject.optInt("day");
                             boolean closed = dayObject.optBoolean("closed");
                             if(day_number == today_day_number){
+                                // IF RESTAURANT IS OPEN TODAY, ADD IT TO THE VIEW PAGER
                                 if(closed == false) {
                                     restaurant_id = restaurant.optInt("id");
                                     name = restaurant.optString("name");
@@ -284,13 +214,7 @@ public class ListActivity extends AppCompatActivity {
                                     AdapterListView adapter = new AdapterListView(ListActivity.this, arrayList);
 //
                                     listView.setAdapter(adapter);
-                                } else {
-                                    // do not display, but log I guess
-//
-                                    Log.i("hey", "hey " + closed);
                                 }
-                            } else {
-                                Log.i("Day number match", "no");
                             }
 
                         }
