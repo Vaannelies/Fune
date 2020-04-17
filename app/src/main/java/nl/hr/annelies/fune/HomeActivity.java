@@ -14,6 +14,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.Button;
@@ -48,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import android.view.Menu;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -85,8 +88,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // ACTION BAR
         getSupportActionBar().setTitle(R.string.app_name);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         start_text = findViewById(R.id.start_text);
         tv_username = findViewById(R.id.tv_username);
@@ -210,6 +215,22 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+    // MENU
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.settings) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /**
      * Manipulates the map once available.
