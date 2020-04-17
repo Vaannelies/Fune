@@ -1,32 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fune</string>
-    <string name="home_title">Fune</string>
     <string name="btn_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
-
-    <!-- Preference Titles -->
     <string name="messages_header">Personal message</string>
     <string name="sync_header">Display</string>
-
-    <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
     <string name="open_today_title">Open today</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="open_today_summary_on">Only show restaurants that are open today.
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="open_today_summary_on">Only show restaurants that are open today.</string>
     <string name="open_today_summary_off">Show all restaurants, even if they are closed today.</string>
     <string name="loading">Loading...</string>
     <string name="username">default</string>
     <string name="btn_list">All restaurants</string>
     <string name="settings_image">Settings</string>
     <string name="title_activity_maps">Map</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
     <string name="title_activity_all_restaurants">All restaurants</string>
     <string name="title_activity_details">Details</string>
     <string name="unknown_location">Oops! I don\'t know where you are.</string>

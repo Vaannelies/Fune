@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     if (ActivityCompat.checkSelfPermission(HomeActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         return;
     } else {
-        start_text.setText("Loading...");
+        start_text.setText(R.string.loading);
         requestPermission();
 
     }
@@ -134,8 +134,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 } else {
                     Log.d("Location??", "Unknown");
-                    start_text.setText("Oops! I don't know where you are.");
-                    Toast.makeText((HomeActivity.this), "I don't know your location.", Toast.LENGTH_SHORT).show();
+                    start_text.setText(R.string.unknown_location);
+                    Toast.makeText((HomeActivity.this), R.string.unknown_location, Toast.LENGTH_SHORT).show();
                 }
             }
         });

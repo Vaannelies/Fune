@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_settings">Instellingen</string>
+    <string name="title_activity_settings">Instellingen</string>
+    <string name="messages_header">Persoonlijk bericht</string>
+    <string name="sync_header">Weergeven</string>
+    <string name="signature_title">Jouw bericht</string>
+    <string name="open_today_title">Vandaag geopend</string>
+    <string name="reply_title">Standaard reactie</string>
+    <string name="attachment_summary_on">Automatisch downloaden</string>
+    <string name="sync_title">Syncrhoniseren</string>
+    <string name="attachment_title">Downloaden</string>
+    <string name="open_today_summary_on">Alleen restaurants weergeven die vandaag open zijn.</string>
+    <string name="open_today_summary_off">Alle restaurants weergeven, ook als ze vandaag gesloten zijn.</string>
+    <string name="loading">Laden...</string>
+    <string name="username">standaard</string>
+    <string name="btn_list">Alle restaurants</string>
+    <string name="settings_image">Instelilngen</string>
+    <string name="title_activity_maps">Kaart</string>
+    <string name="attachment_summary_off">Handmatig downloaden</string>
+    <string name="home_title">Fune</string>
+    <string name="title_activity_all_restaurants">Alle restaurants</string>
+    <string name="title_activity_details">Details</string>
+    <string name="unknown_location">Oeps! Ik weet niet waar je bent.</string>
+</resources>

@@ -55,7 +55,7 @@ public class ListActivity extends AppCompatActivity {
 
         Log.i("location id", getIntent().getStringExtra("location_id"));
 
-        getSupportActionBar().setTitle("All restaurants");
+        getSupportActionBar().setTitle(R.string.title_activity_all_restaurants);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
