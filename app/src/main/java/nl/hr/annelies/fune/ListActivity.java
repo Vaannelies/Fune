@@ -55,6 +55,8 @@ public class ListActivity extends AppCompatActivity {
 
         Log.i("location id", getIntent().getStringExtra("location_id"));
 
+
+        // ACTION BAR
         getSupportActionBar().setTitle(R.string.title_activity_all_restaurants);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

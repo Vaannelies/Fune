@@ -15,9 +15,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
+
 import android.widget.Button;
-import android.widget.ListView;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,10 +63,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double lat;
     private double lng;
     private String city;
+    final static String URI_LOCATION_SPECIFIC = "https://api.eet.nu/venues?location_id=";
+    final static String URI_LOCATIONS = "https://api.eet.nu/locations";
     protected static String location_id;
     private TextView start_text;
     private TextView tv_username;
     private String username;
+    private final static String URI_RESTAURANT = "https://api.eet.nu/venues/";
     private JSONArray opening_hours;
     private boolean must_be_open_today;
     private int today_day_number = 0;
@@ -81,6 +84,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        getSupportActionBar().setTitle(R.string.app_name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         start_text = findViewById(R.id.start_text);
         tv_username = findViewById(R.id.tv_username);
@@ -244,7 +250,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String uri = "https://api.eet.nu/locations";
+        String uri = URI_LOCATIONS;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
@@ -274,7 +280,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String uri = "https://api.eet.nu/venues?location_id=" + location_id;
+        String uri = URI_LOCATION_SPECIFIC + location_id;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
@@ -457,7 +463,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(LOG_TAG_TASK, "hey");
         JsonObjectRequest getRestaurantData = new JsonObjectRequest(
                 Request.Method.GET,
-                "https://api.eet.nu/venues/" + id,
+                URI_RESTAURANT + id,
                 null,
                 new Response.Listener<JSONObject>() {
                     // Additions to the Response listener:
