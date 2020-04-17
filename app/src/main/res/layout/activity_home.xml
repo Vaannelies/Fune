@@ -54,19 +54,6 @@
         app:layout_constraintTop_toTopOf="@+id/viewPager"
         tools:text="Hey name" />
 
-    <ImageButton
-        android:id="@+id/btn_settings"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="#00FFFFFF"
-        android:onClick="settings"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="@+id/viewPager"
-        app:layout_constraintTop_toTopOf="@+id/viewPager"
-        app:srcCompat="@drawable/ic_settings_black_24dp" />
-
 
     <Button
         android:id="@+id/btn_list"

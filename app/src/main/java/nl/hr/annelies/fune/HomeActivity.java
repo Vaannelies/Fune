@@ -85,7 +85,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int today_day_number = 0;
 
     private Button btn_all_restaurants;
-    public static JSONArray restaurants_array;
+
     private GoogleMap mMap;
 
 
@@ -170,6 +170,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         // END OF GET LOCATION
 
 
+        // VIEW PAGER STUFF
 
         models = new ArrayList<>();
         adapter = new AdapterViewPager(models, this);
@@ -177,6 +178,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
         viewPager.setPadding(130, 0, 130, 0);
+
+        // CHANGING BACKGROUND COLOR
 
         Integer[] colors_temp =  {
                 getResources().getColor(R.color.color1),
@@ -197,7 +200,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getResources().getColor(R.color.color16)
         };
 
+
+
         colors = colors_temp;
+
+        // CHANGE COLOR IF SCROLLED
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -238,6 +245,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.settings) {
@@ -246,6 +254,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // GOOGLE MAPS
 
     /**
      * Manipulates the map once available.
@@ -269,6 +279,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
+    // END OF GOOGLE MAPS
+
+    // IF ADAPTER CONTENT CHANGES, IT WILL CRASH UNLESS YOU EXECUTE
+    //                        doNotifyDataSetChangedOnce = true;
+    //                        getCount();
 
     private boolean doNotifyDataSetChangedOnce = false;
 
@@ -279,6 +294,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 viewPager.setAdapter(adapter);
             }
         }
+
+
+    // FIND ALL THE AVAILABLE LOCATIONS IN THE EET.NU API
 
     public void getLocationList() {
 
@@ -296,7 +314,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onResponse(JSONObject response) {
                             // TODO: Handle response
                             Log.d(LOG_TAG_TASK, "I found all the locations in the eet.nu api.");
+                            // THEN FIND OUT WHICH OF THESE LOCATIONS IS MY CURRENT LOCATION
                             updateLocations(response);
+
                         }
                 }, new Response.ErrorListener() {
 
@@ -310,6 +330,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         queue.add(jsonObjectRequest);
 
     }
+
+    // GET ALL THE RESTAURANTS THAT ARE AT MY LOCATION (IN THE EET.NU API)
+
     public void getRestaurantList(String location_id) {
 
         Log.d(LOG_TAG_TASK, "Get restaurant list");
@@ -341,6 +364,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+    // FOR EACH LOCATION IN THE EET.NU API, CHECK IF IT'S THE SAME AS **MY** LOCATION
     public void updateLocations(JSONObject data) {
 
         try {
@@ -372,33 +397,35 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Added try and catch clauses to handle (unexpected) data, that's not called 'results'.
     }
 
+    // FETCH RESTAUARANTS AT CURRENT LOCATION (IN EET.NU API)
     public void updateRestaurants(JSONObject data) {
         try {
             JSONArray restaurants = (JSONArray) data.get("results");
-            JSONObject firstItem = (JSONObject) restaurants.get(0);
-            String name = (String) firstItem.get("name");
 
-
-//            restaurants_array = null;
+            // CHECK IF IT HAS TO DISPLAY **ALL** RESTAURANTS OR JUST THE ONES THAT ARE **OPEN TODAY**
 
             if(restaurants != null) {
                 Log.i("Must be open today", ""+ must_be_open_today);
+
+                // ALL RESTAURANTS
                 if(must_be_open_today == false){
+                    // ONLY SHOW 6 RESTAURANTS IN HOMEACTIVITY
                     for (int i = 0; i <6; i++) {
                         JSONObject restaurant = restaurants.optJSONObject(i);
-                        Log.d("Restaurant", restaurant.optString("name" + "oooooooooooo"));
+                        // DISPLAY RESTAURANT IN VIEW PAGER
                         models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//                        restaurants_array.put(restaurant);
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
 
+                    //WHEN DONE, DISPLAY THE 'ALL RESTAURANTS' BUTTON
                     btn_all_restaurants.setVisibility(View.VISIBLE);
 
+                // ONLY THE RESTAURANTS THAT ARE OPEN TODAY
                 } else { //Check which restaurants are open right now
                     Log.i(LOG_TAG_TASK, "Restaurants must be open.");
-                    // First, get todays date (day format)
 
+                    // First, get todays date (day format)
                     Calendar calendar = Calendar.getInstance();
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
                     Log.i("Day of the week is", "" + day);
@@ -429,19 +456,16 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.i("today_day_number is", "" + today_day_number);
                     Log.i("number of restaurants", ""+ restaurants.length());
 
+
+                    // ONLY SHOW 6 RESTAURANTS IN HOME ACTIVITY
                     for (int k = 0; k < 6; k++) {
-                        Log.i("count","hoi" + k);
                         final JSONObject restaurant = restaurants.optJSONObject(k);
-                        Log.i("Restaurant", restaurant.optString("name" + "oooooooooooo"));
-                        // get detailed data
+                        // get detailed data, find out if it's open today, and then add to the view pager
                         int id = restaurant.optInt("id");
                         fetchDetailData(id, restaurant);
-
                     }
                     doNotifyDataSetChangedOnce = true;
                     getCount();
-
-//                    btn_all_restaurants.setVisibility(View.VISIBLE);
                 }
 
             } else {
@@ -481,10 +505,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void settings(View view) {
-        Intent i = new Intent(this, SettingsActivity.class);
-        startActivity(i);
-    }
     public void restaurantList(View view) {
         Intent i = new Intent(this, ListActivity.class);
         i.putExtra("location_id", location_id);
@@ -521,7 +541,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.i("hey", "hey " + closed);
 
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-//                                    restaurants_array.put(restaurant);
+
                                 } else {
                                     // do not display, but log I guess
 //
