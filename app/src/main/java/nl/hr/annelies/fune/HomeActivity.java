@@ -200,8 +200,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getResources().getColor(R.color.color16)
         };
 
-
-
         colors = colors_temp;
 
         // CHANGE COLOR IF SCROLLED
@@ -528,33 +526,26 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onResponse(JSONObject response) {
                         // TODO: Handle response
-//                        Log.i(LOG_TAG_TASK, "I found the data of " + response.optString("name"));
-                        opening_hours = response.optJSONArray("opening_hours");
-//                        Log.i(LOG_TAG_TASK, "Number of days is " + opening_hours.length());
 
+                        // FOR EACH RESTAURANT, CHECK IF THERE IS INFO ABOUT THE OPENING HOURS FOR EACH DAY OF THE WEEK
+                        opening_hours = response.optJSONArray("opening_hours");
+
+                        // FOR EACH DAY OF THE WEEK, CHECK IF THE RESTAURANT IS OPEN OR NOT
                         for(int j = 0; j < opening_hours.length(); j++) {
                             JSONObject dayObject = opening_hours.optJSONObject(j);
                             int day_number = dayObject.optInt("day");
                             boolean closed = dayObject.optBoolean("closed");
                             if(day_number == today_day_number){
+                                // IF RESTAURANT IS OPEN TODAY, ADD IT TO THE VIEW PAGER
                                 if(closed == false) {
-                                    Log.i("hey", "hey " + closed);
-
                                     models.add(new CardModel(R.drawable.dog, restaurant.optString("name"), restaurant.optString("category"), restaurant.optInt("id")));
-
-                                } else {
-                                    // do not display, but log I guess
-//
-                                    Log.i("hey", "hey " + closed);
                                 }
-                            } else {
-                                Log.i("Day number match", "no");
                             }
-
                         }
                         doNotifyDataSetChangedOnce = true;
                         getCount();
 
+                        //WHEN DONE, DISPLAY THE 'ALL RESTAURANTS' BUTTON
                         btn_all_restaurants.setVisibility(View.VISIBLE);
 
                     }
