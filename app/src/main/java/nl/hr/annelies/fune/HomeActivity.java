@@ -227,6 +227,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
+
     private boolean doNotifyDataSetChangedOnce = false;
 
         protected void getCount() {
