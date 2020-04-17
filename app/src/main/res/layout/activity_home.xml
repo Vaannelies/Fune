@@ -95,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             map:mapType="normal"
             map:uiCompass="true"
-
+            map:cameraZoom="10"
             tools:context=".MapsActivity"
             tools:layout_editor_absoluteX="0dp" />
 

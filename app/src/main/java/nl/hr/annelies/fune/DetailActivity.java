@@ -35,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tv_name;
     private TextView tv_category;
     private TextView tv_street;
+    private TextView tv_telephone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_name = findViewById(R.id.name);
         tv_category = findViewById(R.id.category);
         tv_street = findViewById(R.id.street);
+        tv_telephone = findViewById(R.id.telephone);
 
 
         this.id = getIntent().getIntExtra("id", 0);     //get the restaurant id
@@ -106,6 +108,7 @@ public class DetailActivity extends AppCompatActivity {
             tv_name.setText(name);
             tv_category.setText(category);
             tv_street.setText(street);
+            tv_telephone.setText(telephone);
 
 //            private int rating;
         }  catch (Exception e) {
